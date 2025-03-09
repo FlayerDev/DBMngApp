@@ -9,7 +9,11 @@ import java.util.UUID;
 @Entity
 public class Supplier extends Person {
 
-    @OneToMany(mappedBy = "suppliers", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "person-document")
+    private List<Document> documents;
+
+    @ManyToMany(cascade = CascadeType.ALL)
     @JsonManagedReference(value = "supplier-item")
     private List<Item> items;
 

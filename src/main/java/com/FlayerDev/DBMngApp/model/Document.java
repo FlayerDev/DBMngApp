@@ -1,5 +1,6 @@
 package com.FlayerDev.DBMngApp.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -16,7 +17,8 @@ public class Document {
     private String name;
 
     @ManyToOne
-    private Client client;
+    @JsonBackReference(value = "person-document")
+    private Person person;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JsonManagedReference(value = "document-item")
@@ -30,9 +32,9 @@ public class Document {
         this.id = id;
     }
 
-    public Client getClient() {return client;}
+    public Person getPerson() {return person;}
 
-    public void setClient(Client client) {this.client = client;}
+    public void setPerson(Person person) {this.person = person;}
 
     public String getName() {
         return name;
