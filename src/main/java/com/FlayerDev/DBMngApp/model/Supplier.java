@@ -24,4 +24,8 @@ public class Supplier extends Person {
     public void setItems(List<Item> items) {
         this.items = items;
     }
+
+    public List<Document> getDocuments() { return documents; }
+
+    public void setDocuments(List<Document> documents) { this.documents = documents; }
 }
