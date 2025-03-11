@@ -15,7 +15,7 @@ public class Item {
     @Column(nullable = false)
     private String name;
 
-    @ManyToMany(mappedBy = "Items")
+    @ManyToMany(mappedBy = "items")
     @JsonBackReference(value = "supplier-item")
     List<Supplier> suppliers;
 
