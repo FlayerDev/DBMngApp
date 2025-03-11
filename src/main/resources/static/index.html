@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DBMngApp Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        .panel {
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .add-panel {
+            background-color: #e0f7fa;
+        }
+        .list-panel {
+            background-color: #f1f8e9;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        input, button {
+            margin: 5px 0;
+            padding: 5px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+<h1>DBMngApp Dashboard</h1>
+<div class="container">
+    <!-- Add Client -->
+    <div class="panel add-panel">
+        <h3>Add Client</h3>
+        <input id="clientName" placeholder="Client Name" />
+        <button onclick="addClient()">Add</button>
+        <p id="clientResult"></p>
+    </div>
+
+    <!-- Add Supplier -->
+    <div class="panel add-panel">
+        <h3>Add Supplier</h3>
+        <input id="supplierName" placeholder="Supplier Name" />
+        <button onclick="addSupplier()">Add</button>
+        <p id="supplierResult"></p>
+    </div>
+
+    <!-- Add Document -->
+    <div class="panel add-panel">
+        <h3>Add Document</h3>
+        <input id="documentName" placeholder="Document Name" />
+        <select id="documentPersonType">
+            <option value="client">Client</option>
+            <option value="supplier">Supplier</option>
+        </select>
+        <input id="documentPersonId" placeholder="Person ID (UUID)" />
+        <button onclick="addDocument()">Add</button>
+        <p id="documentResult"></p>
+    </div>
+
+    <!-- Add Item -->
+    <div class="panel add-panel">
+        <h3>Add Item</h3>
+        <input id="itemName" placeholder="Item Name" />
+        <button onclick="addItem()">Add</button>
+        <p id="itemResult"></p>
+    </div>
+
+    <!-- List Clients -->
+    <div class="panel list-panel">
+        <h3>Clients</h3>
+        <button onclick="fetchClients()">Refresh</button>
+        <ul id="clientList"></ul>
+    </div>
+
+    <!-- List Suppliers -->
+    <div class="panel list-panel">
+        <h3>Suppliers</h3>
+        <button onclick="fetchSuppliers()">Refresh</button>
+        <ul id="supplierList"></ul>
+    </div>
+
+    <!-- List Documents -->
+    <div class="panel list-panel">
+        <h3>Documents</h3>
+        <button onclick="fetchDocuments()">Refresh</button>
+        <ul id="documentList"></ul>
+    </div>
+
+    <!-- List Items -->
+    <div class="panel list-panel">
+        <h3>Items</h3>
+        <button onclick="fetchItems()">Refresh</button>
+        <ul id="itemList"></ul>
+    </div>
+</div>
+
+<script>
+    const BASE_URL = "http://localhost:8080/api";
+
+    // Add Functions
+    function addClient() {
+        const name = document.getElementById("clientName").value;
+        fetch(`${BASE_URL}/clients`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name })
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("clientResult").innerText = `Added: ${data.name} (ID: ${data.id})`;
+            fetchClients(); // Refresh list
+        })
+        .catch(error => document.getElementById("clientResult").innerText = "Error: " + error);
+    }
+
+    function addSupplier() {
+        const name = document.getElementById("supplierName").value;
+        fetch(`${BASE_URL}/suppliers`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name })
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("supplierResult").innerText = `Added: ${data.name} (ID: ${data.id})`;
+            fetchSuppliers();
+        })
+        .catch(error => document.getElementById("supplierResult").innerText = "Error: " + error);
+    }
+
+    function addDocument() {
+        const name = document.getElementById("documentName").value;
+        const personType = document.getElementById("documentPersonType").value;
+        const personId = document.getElementById("documentPersonId").value;
+        fetch(`${BASE_URL}/documents/${personType}s/${personId}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name })
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("documentResult").innerText = `Added: ${data.name} (ID: ${data.id})`;
+            fetchDocuments();
+        })
+        .catch(error => document.getElementById("documentResult").innerText = "Error: " + error);
+    }
+
+    function addItem() {
+        const name = document.getElementById("itemName").value;
+        fetch(`${BASE_URL}/items`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name })
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("itemResult").innerText = `Added: ${data.name} (ID: ${data.id})`;
+            fetchItems();
+        })
+        .catch(error => document.getElementById("itemResult").innerText = "Error: " + error);
+    }
+
+    // Fetch Functions
+    function fetchClients() {
+        fetch(`${BASE_URL}/clients`)
+            .then(response => response.json())
+            .then(data => {
+                const list = document.getElementById("clientList");
+                list.innerHTML = "";
+                data.forEach(client => {
+                    const li = document.createElement("li");
+                    li.innerText = `${client.name} (ID: ${client.id})`;
+                    list.appendChild(li);
+                });
+            });
+    }
+
+    function fetchSuppliers() {
+        fetch(`${BASE_URL}/suppliers`)
+            .then(response => response.json())
+            .then(data => {
+                const list = document.getElementById("supplierList");
+                list.innerHTML = "";
+                data.forEach(supplier => {
+                    const li = document.createElement("li");
+                    li.innerText = `${supplier.name} (ID: ${supplier.id})`;
+                    list.appendChild(li);
+                });
+            });
+    }
+
+    function fetchDocuments() {
+        fetch(`${BASE_URL}/documents`)
+            .then(response => response.json())
+            .then(data => {
+                const list = document.getElementById("documentList");
+                list.innerHTML = "";
+                data.forEach(doc => {
+                    const li = document.createElement("li");
+                    li.innerText = `${doc.name} (ID: ${doc.id}, Person: ${doc.person ? doc.person.id : 'None'})`;
+                    list.appendChild(li);
+                });
+            });
+    }
+
+    function fetchItems() {
+        fetch(`${BASE_URL}/items`)
+            .then(response => response.json())
+            .then(data => {
+                const list = document.getElementById("itemList");
+                list.innerHTML = "";
+                data.forEach(item => {
+                    const li = document.createElement("li");
+                    li.innerText = `${item.name} (ID: ${item.id})`;
+                    list.appendChild(li);
+                });
+            });
+    }
+</script>
+</body>
+</html>
