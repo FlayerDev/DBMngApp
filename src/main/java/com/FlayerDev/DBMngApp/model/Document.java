@@ -21,7 +21,6 @@ public class Document {
     private Person person;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JsonManagedReference(value = "document-item")
     private List<Item> items;
 
     public UUID getId() {

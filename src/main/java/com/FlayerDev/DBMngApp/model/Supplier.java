@@ -13,8 +13,7 @@ public class Supplier extends Person {
     @JsonManagedReference(value = "person-document")
     private List<Document> documents;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JsonManagedReference(value = "supplier-item")
+    @ManyToMany
     private List<Item> items;
 
     public List<Item> getItems() {

@@ -16,7 +16,6 @@ public class Item {
     private String name;
 
     @ManyToMany(mappedBy = "items")
-    @JsonBackReference(value = "supplier-item")
     List<Supplier> suppliers;
 
     public UUID getId() {
@@ -37,11 +36,6 @@ public class Item {
 
     public List<Supplier> getSuppliers() {
         return suppliers;
-    }
-
-    public void setSuppliers(Supplier supplier) {
-
-        this.suppliers = List.of(new Supplier[]{supplier});
     }
 
     public void setSuppliers(List<Supplier> suppliers) {

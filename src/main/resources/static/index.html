@@ -166,7 +166,7 @@
         const name = document.getElementById("itemName").value;
         fetch(`${BASE_URL}/items`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Accept": "application/json", "Content-Type": "application/json" },
             body: JSON.stringify({ name })
         })
         .then(response => response.json())
